@@ -17,7 +17,8 @@
  */
 function local_whiacohortsync_cohortsynctask() {
     global $DB, $CFG;
-
+    require($CFG->dirroot.'/cohort/lib.php');
+    mtrace("WHIA cohort sync started");
     $timestamp = time();
 	// Find all courses where the course.idnumber = Cohort.idnuumber
     // Get all the users with "Manual enrolment" in the course
@@ -25,12 +26,12 @@ function local_whiacohortsync_cohortsynctask() {
 	        c.idnumber, u.id as userid,
             e.id as enrolid
             FROM mdl_course c
-            JOIN mdl_enrol e ON c.id = c.id
+            JOIN mdl_enrol e ON e.courseid = c.id AND e.enrol = 'manual'
             JOIN mdl_user_enrolments ue ON ue.enrolid = e.id
             JOIN mdl_user u ON u.id = ue.userid
             WHERE c.idnumber IS NOT NULL
             AND c.idnumber IN (SELECT DISTINCT idnumber FROM mdl_cohort)
-			AND c.id = 16";
+			";
     $userlist = $DB->get_records_sql($sql);
 	
 	// Add the users to the cohort where the cohort idnumber matches to the course idnumber
@@ -43,4 +44,5 @@ function local_whiacohortsync_cohortsynctask() {
 		   $DB->delete_records('user_enrolments', array('enrolid' => $ul->enrolid, 'userid' => $ul->userid));
 	   }
     }
+    mtrace("WHIA cohort sync completed");
 }

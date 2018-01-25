@@ -11,7 +11,6 @@
  */
 require_once('../../config.php');
 require($CFG->dirroot.'/local/whiacohortsync/locallib.php');
-require($CFG->dirroot.'/local/whiacohortsync/notificationlist_form.php');
 
 // Require login.
 require_login();
@@ -23,18 +22,4 @@ $url = new moodle_url('/local/whiacohortsync/index.php');
 // Require Capability.
 require_capability('local/whiacohortsync:synccohorts', $systemcontext);
 
-// Set up Page object.
-$PAGE->set_url($url);
-$PAGE->set_context($systemcontext);
-$PAGE->set_title($strtitle);
-$PAGE->set_pagelayout('admin');
-$PAGE->set_heading($strtitle); 
-
-// Initialize a form.
-$mform = new notificationlist_form();
-
-// Output renderers.
-echo $OUTPUT->header();
-echo $mform->display();
-echo $OUTPUT->footer();
-
+local_whiacohortsync_cohortsynctask();
